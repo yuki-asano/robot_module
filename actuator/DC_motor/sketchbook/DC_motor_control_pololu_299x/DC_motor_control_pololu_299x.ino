@@ -1,6 +1,6 @@
 // DC motor control
-// Pololu G2 High-Power Motor Driver 24v13
-// Pololu item #2992  
+// Pololu G2 High-Power Motor Driver 24v13 #2992
+// Pololu G2 High-Power Motor Driver 24v21 #2995
 //
 #define BAUD 57600 // Baud rate
 #define PWM_PIN 3  // PIN for generating PWM
