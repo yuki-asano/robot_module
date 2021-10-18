@@ -1,13 +1,21 @@
+#include <Arduino.h>
+#include <ros.h>
+#include <std_msgs/Float32.h>
+
 #define BAUD 115200
+#define ROS_BAUD 115200
 
 volatile int pulse_num;
-double flow_rate;
+float flow_rate;
 unsigned long time_current;
 unsigned long time_loop;
 unsigned long time_sampling;
 
+ros::NodeHandle nh;
+std_msgs::Float32 msg;
+ros::Publisher pub("flow_rate", &msg);
+
 void setup() {
-  //pinMode(SENSOR_PIN, INPUT);
   Serial.begin(BAUD);
   attachInterrupt(0, pulse_count, RISING); // 1st arg: 0 -> 2pin, 1 -> 3pin.
   pulse_num = 0;
@@ -15,6 +23,11 @@ void setup() {
   time_current = millis();
   time_loop = time_current;
   time_sampling = 1000; // 1[s]
+
+  // setup ros functions
+  nh.getHardware()->setBaud(ROS_BAUD);
+  nh.initNode();
+  nh.advertise(pub);
 }
 
 void pulse_count() {
@@ -28,8 +41,13 @@ void loop() {
   {
       time_loop = time_current;
       flow_rate = pulse_num / 7.5; // F = 7.5 * Q (L/min)
+      
+      msg.data = flow_rate;
+      pub.publish(&msg);
+      nh.spinOnce();
+
       Serial.print("flow_rate[l/m]: ");
       Serial.println(flow_rate);
       pulse_num = 0; // reset counter
-  } 
+  }
 }
