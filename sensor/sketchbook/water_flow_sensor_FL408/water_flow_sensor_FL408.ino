@@ -9,7 +9,8 @@ volatile int pulse_num;
 float flow_rate;
 unsigned long time_current;
 unsigned long time_loop;
-unsigned long time_sampling;
+unsigned long time_sampling_ms;
+unsigned long time_sampling_s;
 
 ros::NodeHandle nh;
 std_msgs::Float32 msg;
@@ -22,7 +23,8 @@ void setup() {
   flow_rate = 0; // [l/min]
   time_current = millis();
   time_loop = time_current;
-  time_sampling = 1000; // 1[s]
+  time_sampling_ms = 1000; // 1[s]
+  time_sampling_s = time_sampling_ms / 1000;
 
   // setup ros functions
   nh.getHardware()->setBaud(ROS_BAUD);
@@ -37,10 +39,10 @@ void pulse_count() {
 void loop() {
   time_current = millis();
 
-  if(time_current >= (time_loop + time_sampling))
+  if(time_current >= (time_loop + time_sampling_ms))
   {
       time_loop = time_current;
-      flow_rate = pulse_num / 7.5; // F = 7.5 * Q (L/min)
+      flow_rate = pulse_num / time_sampling_s / 7.5; // Freq = 7.5 * Q (L/min)
       
       msg.data = flow_rate;
       pub.publish(&msg);
