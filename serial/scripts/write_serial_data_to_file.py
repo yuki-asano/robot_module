@@ -1,12 +1,13 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import os
 import sys
 import serial
 
-PORT = '/dev/ttyUSB0'
-#PORT = 'COM5' # for windows
+#PORT = '/dev/ttyUSB0' # for linux
+#PORT = 'COM4' # for windows(PowerShell)
+PORT = '/dev/ttyS4' # for windows(WSL)
 BAUD = 57600
 ser = serial.Serial(PORT, BAUD)
 
@@ -20,6 +21,7 @@ try:
         print(data)
         f.writelines(data)
 except KeyboardInterrupt:
+    f.close()
     sys.exit
 
-f.close()
+
