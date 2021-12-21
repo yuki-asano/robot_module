@@ -1,4 +1,4 @@
-//d Current sensor
+// Current sensor
 // Pololu ACHS-7121: -10 -- 10A, #4030
 
 #include <Arduino.h>
