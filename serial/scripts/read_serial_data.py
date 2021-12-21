@@ -3,9 +3,9 @@
 
 import serial
 
-#PORT = '/dev/ttyUSB0' # for linux
+PORT = '/dev/ttyACM0' # for linux
 #PORT = 'COM4' # for windows(PowerShell)
-PORT = '/dev/ttyS4' # for windows(WSL)
+#PORT = '/dev/ttyS4' # for windows(WSL)
 BAUD = 57600
 ser = serial.Serial(PORT, BAUD)
 
@@ -17,4 +17,3 @@ try:
         print(data)
 except KeyboardInterrupt:
     sys.exit
-
