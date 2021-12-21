@@ -23,23 +23,6 @@ void setup() {
 }
 
 void loop() {
-  // motor control
-  // forward
-  digitalWrite(DIR_PIN, LOW);
-  analogWrite(PWM_PIN, 52); // PWM 20% (100% -> 255)
-  delay(500);
-
-  analogWrite(PWM_PIN, 0);  // stop
-  delay(1000);
-
-  // backward
-  digitalWrite(DIR_PIN, HIGH);
-  analogWrite(PWM_PIN, 52); // PWM 20% (100% -> 255)
-  delay(500);
-
-  analogWrite(PWM_PIN, 0);  // stop
-  delay(1000);
-
   // get temperature
   temp = get_temp_TMP03(SENSOR_PIN);
   elapsed_time = get_elapsed_time();
@@ -47,4 +30,25 @@ void loop() {
   Serial.print(elapsed_time);
   Serial.print(" ");
   Serial.println(temp);
+
+  if(temp < 70) {
+    // motor control
+    // forward
+    digitalWrite(DIR_PIN, LOW);
+    analogWrite(PWM_PIN, 52); // PWM 20% (100% -> 255)
+    delay(500);
+
+    analogWrite(PWM_PIN, 0);  // stop
+    delay(1000);
+
+    // backward
+    digitalWrite(DIR_PIN, HIGH);
+    analogWrite(PWM_PIN, 52); // PWM 20% (100% -> 255)
+    delay(500);
+
+    analogWrite(PWM_PIN, 0);  // stop
+    delay(1000);
+  } else {
+    Serial.println("temp is high");
+  }
 }
