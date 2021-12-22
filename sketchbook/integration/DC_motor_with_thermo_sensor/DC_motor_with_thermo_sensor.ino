@@ -1,13 +1,26 @@
 #include <thermo_sensor_TMP03.h>
 #include <Time.h>
+#include <EncoderPololu.h>
+#include <MsTimer2.h>
 
 #define BAUD 57600
-#define SENSOR_PIN 2
+#define THERMO_SENSOR_PIN 2
 #define PWM_PIN 3  // PIN for generating PWM
 #define DIR_PIN 4  // PIN for designating rotation direction. HIGH: OUTA -> OUTB, LOW: OUTB -> OUTA.
+#define ENC_PIN1 5
+#define ENC_PIN2 6
 
 float temp = 0;
 unsigned long elapsed_time = 0;
+const float gearRatio = 34.0;
+const int encoderCPR = 48;
+float motorAngle = 0.0;
+
+EncoderPololu enc(ENC_PIN1, ENC_PIN2, encoderCPR, gearRatio);
+
+void readEnc() {
+  enc.readEncoderCount(); // direct use of this in MsTimer2 becomes error.
+}
 
 void setup() {
   Serial.begin(BAUD);
@@ -17,15 +30,21 @@ void setup() {
   digitalWrite(DIR_PIN, LOW); // default LOW
   delay(500);
 
-  setup_TMP03(SENSOR_PIN);
+  setup_TMP03(THERMO_SENSOR_PIN);
   setup_elapsed_time();
   Serial.println("# time[ms] temp[degC]");
+
+  MsTimer2::set(1, readEnc);
+  MsTimer2::start();
 }
 
 void loop() {
   // get temperature
-  temp = get_temp_TMP03(SENSOR_PIN);
+  temp = get_temp_TMP03(THERMO_SENSOR_PIN);
   elapsed_time = get_elapsed_time();
+
+  // get motor angle
+  motorAngle = enc.getMotorAngle();
 
   Serial.print(elapsed_time);
   Serial.print(" ");
