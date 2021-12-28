@@ -3,10 +3,12 @@
 
 #define BAUD 57600
 #define SENSOR_PIN 2
+#define SENSOR_PIN2 3
 #define PWM_PIN 3  // PIN for generating PWM
 #define DIR_PIN 4  // PIN for designating rotation direction. HIGH: OUTA -> OUTB, LOW: OUTB -> OUTA.
 
 float temp = 0;
+float temp2 = 0;
 unsigned long elapsed_time = 0;
 
 void setup() {
@@ -18,18 +20,22 @@ void setup() {
   delay(500);
 
   setup_TMP03(SENSOR_PIN);
+  setup_TMP03(SENSOR_PIN2);
   setup_elapsed_time();
-  Serial.println("# time[ms] temp[degC]");
+  Serial.println("# time[ms] temp[degC] temp2[degC]");
 }
 
 void loop() {
   // get temperature
   temp = get_temp_TMP03(SENSOR_PIN);
+  temp2 = get_temp_TMP03(SENSOR_PIN2);
   elapsed_time = get_elapsed_time();
 
   Serial.print(elapsed_time);
   Serial.print(" ");
   Serial.println(temp);
+  Serial.print(" ");
+  Serial.println(temp2);
 
   if(temp < 70) {
     // motor control
