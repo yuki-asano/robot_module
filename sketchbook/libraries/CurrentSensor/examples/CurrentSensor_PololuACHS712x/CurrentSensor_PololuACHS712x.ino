@@ -1,5 +1,3 @@
-// Current sensor
-
 #include <CurrentSensor.h>
 
 #define BAUD 115200

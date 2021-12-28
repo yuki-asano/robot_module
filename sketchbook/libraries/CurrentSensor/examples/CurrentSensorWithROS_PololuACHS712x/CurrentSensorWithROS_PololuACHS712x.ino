@@ -1,6 +1,3 @@
-// Current sensor
-// Pololu ACHS-7121: -10 -- 10A, #4030
-
 #include <Arduino.h>
 #include <ros.h>
 #include <std_msgs/Float32.h>
