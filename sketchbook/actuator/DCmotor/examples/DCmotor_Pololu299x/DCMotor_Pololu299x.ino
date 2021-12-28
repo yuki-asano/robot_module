@@ -27,7 +27,7 @@ void loop() {
   analogWrite(PWM_PIN, 0);  // stop
   delay(1000);
 
-  // backward 
+  // Backward
   Serial.println("Backward");
   digitalWrite(DIR_PIN, HIGH);
   analogWrite(PWM_PIN, 52); // PWM 20% (100% -> 255)

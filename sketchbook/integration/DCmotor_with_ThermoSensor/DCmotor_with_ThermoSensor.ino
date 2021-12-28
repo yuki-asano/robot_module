@@ -1,4 +1,4 @@
-#include <thermo_sensor_TMP03.h>
+#include <ThermoSensor_TMP03.h>
 #include <Time.h>
 
 #define BAUD 57600
