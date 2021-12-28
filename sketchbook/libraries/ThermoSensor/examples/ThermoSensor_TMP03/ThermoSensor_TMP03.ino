@@ -1,4 +1,4 @@
-#include <ThermoSensor_TMP03.h>
+#include <ThermoSensor.h>
 
 #define SENSOR_PIN 2
 #define BAUD 57600

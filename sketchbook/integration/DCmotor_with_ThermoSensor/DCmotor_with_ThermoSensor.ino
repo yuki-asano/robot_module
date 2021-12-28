@@ -1,9 +1,9 @@
-#include <ThermoSensor_TMP03.h>
+#include <ThermoSensor.h>
 #include <Time.h>
 
 #define BAUD 57600
 #define SENSOR_PIN 2
-#define SENSOR_PIN2 3
+#define SENSOR_PIN2 5
 #define PWM_PIN 3  // PIN for generating PWM
 #define DIR_PIN 4  // PIN for designating rotation direction. HIGH: OUTA -> OUTB, LOW: OUTB -> OUTA.
 
@@ -33,7 +33,7 @@ void loop() {
 
   Serial.print(elapsed_time);
   Serial.print(" ");
-  Serial.println(temp);
+  Serial.print(temp);
   Serial.print(" ");
   Serial.println(temp2);
 
