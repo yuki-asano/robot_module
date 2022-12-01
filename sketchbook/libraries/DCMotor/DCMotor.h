@@ -1,4 +1,7 @@
 // General class for DC motor control with Arduino
+#ifndef DEBUG
+#define DEBUG 1
+#endif
 
 class DCMotor {
  public:
@@ -20,11 +23,13 @@ class DCMotor {
     pwm = 255 * duty / 100;
     analogWrite(pin_pwm, pwm);
 
-    Serial.print("Change PWM duty to ");
-    Serial.print(int(duty));
-    Serial.print("% (value:");
-    Serial.print(pwm);
-    Serial.println(")");
+    if(DEBUG) {
+      Serial.print("Change PWM duty to ");
+      Serial.print(int(duty));
+      Serial.print("% (value:");
+      Serial.print(pwm);
+      Serial.println(")");
+    }
   }
 
 };

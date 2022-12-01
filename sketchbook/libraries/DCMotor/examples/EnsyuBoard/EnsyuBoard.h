@@ -1,6 +1,10 @@
 // Motor driver IC: Toshiba TB67H450FNG
 #include "DCMotor.h"
 
+#ifndef DEBUG
+#define DEBUG 1
+#endif
+
 
 class EnsyuBoard : public DCMotor {
  public:
@@ -27,9 +31,11 @@ class EnsyuBoard : public DCMotor {
 
   // IN1 HIGH and IN2 LOW -> forward
   void forwardDrive(uint8_t pwm_duty, unsigned int duration) {
-    Serial.print("Driving forward ");
-    Serial.print(duration);
-    Serial.println("[ms]");
+    if(DEBUG) {
+      Serial.print("Driving forward ");
+      Serial.print(duration);
+      Serial.println("[ms]");
+    }
 
     PWMdutyChange(pwm_duty);
     digitalWrite(pin_in1, HIGH);
@@ -41,9 +47,11 @@ class EnsyuBoard : public DCMotor {
 
   // IN1 LOW and IN2 HIGH -> backward
   void backwardDrive(uint8_t pwm_duty, unsigned int duration) {
-    Serial.print("Driving backward ");
-    Serial.print(duration);
-    Serial.println("[ms]");
+    if(DEBUG) {
+      Serial.print("Driving backward ");
+      Serial.print(duration);
+      Serial.println("[ms]");
+    }
 
     PWMdutyChange(pwm_duty);
     digitalWrite(pin_in1, LOW);
@@ -55,7 +63,10 @@ class EnsyuBoard : public DCMotor {
 
   // IN1 LOW and IN2 LOW -> Stop(Standby)
   void stopDrive() {
-    Serial.println("Stop");
+    if(DEBUG) {
+      Serial.println("Stop");
+    }
+
     digitalWrite(pin_in1, LOW);
     digitalWrite(pin_in2, LOW);
   }
@@ -63,7 +74,10 @@ class EnsyuBoard : public DCMotor {
   // IN1 HIGH and IN2 HIGH -> Brake
   // brakeDrive brings sudden stop
   void brakeDrive() {
-    Serial.println("Brake");
+    if(DEBUG) {
+      Serial.println("Brake");
+    }
+
     digitalWrite(pin_in1, HIGH);
     digitalWrite(pin_in2, HIGH);
   }
