@@ -6,6 +6,7 @@ class DCMotor {
   uint8_t pin_pwm;
 
   DCMotor(uint8_t _pin_pwm) {
+    pwm = 0;
     pin_pwm = _pin_pwm;
   }
 
