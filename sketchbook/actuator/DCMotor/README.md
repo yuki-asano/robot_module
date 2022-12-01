@@ -7,3 +7,5 @@
 - Pololu G2 High-Power Motor Driver 24v13
   - Pololu item #: 2992
   - https://www.pololu.com/product/2992
+- Ensyu board
+  - Motor driver IC: Toshiba TB67H450FNG
