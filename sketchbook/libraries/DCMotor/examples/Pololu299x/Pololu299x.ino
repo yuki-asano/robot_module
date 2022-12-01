@@ -17,11 +17,9 @@ void loop() {
   Serial.println("---START LOOP---");
 
   P.forwardDrive(20, 1000);
-  P.brakeDrive();
   delay(500);
 
   P.backwardDrive(20, 1000);
-  P.brakeDrive();
   delay(500);
 
   Serial.println("");

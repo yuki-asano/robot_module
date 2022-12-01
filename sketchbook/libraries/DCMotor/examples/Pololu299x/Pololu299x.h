@@ -37,6 +37,7 @@ class Pololu299x : public DCMotor {
     PWMdutyChange(pwm_duty);
 
     delay(duration);
+    brakeDrive();
   }
 
   void backwardDrive(uint8_t pwm_duty, unsigned int duration) {
@@ -48,6 +49,7 @@ class Pololu299x : public DCMotor {
     PWMdutyChange(pwm_duty);
 
     delay(duration);
+    brakeDrive();
   }
 
   void brakeDrive() {

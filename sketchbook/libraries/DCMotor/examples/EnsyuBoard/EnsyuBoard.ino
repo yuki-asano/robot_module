@@ -17,10 +17,10 @@ void setup() {
 void loop() {
   Serial.println("---START LOOP---");
 
-  EB.forwardDrive(20, 2000);
+  EB.forwardDrive(20, 1000);
   delay(500);
 
-  EB.backwardDrive(20, 2000);
+  EB.backwardDrive(20, 1000);
   delay(500);
 
   Serial.println("");
