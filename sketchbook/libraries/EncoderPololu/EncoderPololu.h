@@ -30,13 +30,19 @@ class EncoderPololu : public Encoder {
     encoderCount = angle / 360.0 * totalCPR;
     this->write(encoderCount);
   }
-  
+
+  float getEncoderCount() {
+    readEncoderCount();
+    return encoderCount;
+  }
+
   float getMotorAngle() {
     float angle = 0;
+    readEncoderCount();
     return angle =  encoderCount * 360 / totalCPR;
     // Example:
-    // 4.4(gear) * 48(CPR) = 211.2(total CPR)
-    // 360deg : 211.2 = x deg : encoderCount
+    // 4.4(gear) * 48(CPR) = 211.2(total CPR) -> counts per revolution
+    // 360 [deg] : 211.2 = x [deg] : encoderCount
     // x = encoderCount * 360 / 211.2
   }
 

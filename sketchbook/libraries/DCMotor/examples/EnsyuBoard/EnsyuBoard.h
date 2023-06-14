@@ -45,6 +45,16 @@ class EnsyuBoard : public DCMotor {
     stopDrive();
   }
 
+  void forwardDrive2(uint8_t pwm_duty) {
+    if(DEBUG) {
+      Serial.print("Driving forward ");
+    }
+
+    PWMdutyChange(pwm_duty);
+    digitalWrite(pin_in1, HIGH);
+    digitalWrite(pin_in2, LOW);
+  }
+
   // IN1 LOW and IN2 HIGH -> backward
   void backwardDrive(uint8_t pwm_duty, unsigned int duration) {
     if(DEBUG) {
@@ -59,6 +69,16 @@ class EnsyuBoard : public DCMotor {
 
     delay(duration);
     stopDrive();
+  }
+
+  void backwardDrive2(uint8_t pwm_duty) {
+    if(DEBUG) {
+      Serial.print("Driving backward ");
+    }
+
+    PWMdutyChange(pwm_duty);
+    digitalWrite(pin_in1, LOW);
+    digitalWrite(pin_in2, HIGH);
   }
 
   // IN1 LOW and IN2 LOW -> Stop(Standby)
