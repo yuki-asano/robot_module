@@ -110,9 +110,10 @@ void loop() {
   if(tc1Flag) {
     // drive motor
     if(motorTemp < 70) {
-      EB.forwardDrive(50, 500);  // arg: (pwm, delay)
-      delay(100);
-      EB.backwardDrive(50, 500);
+      EB.forwardDrive(77, 2000);  // arg: (pwm, delay). PWM 30%.
+      delay(300);
+      EB.backwardDrive(77, 2000);
+      delay(300);
     } else {
       Serial.println("motorTemp is high");
     }
