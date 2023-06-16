@@ -111,7 +111,7 @@ void loop() {
     // drive motor
     if(motorTemp < 70) {
       EB.forwardDrive(50, 500);  // arg: (pwm, delay)
-      delay(100)
+      delay(100);
       EB.backwardDrive(50, 500);
     } else {
       Serial.println("motorTemp is high");
