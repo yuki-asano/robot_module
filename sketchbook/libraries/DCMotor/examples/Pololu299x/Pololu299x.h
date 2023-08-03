@@ -2,6 +2,10 @@
 // Pololu G2 High-Power Motor Driver 24v21 #2995
 #include "DCMotor.h"
 
+#ifndef DEBUG
+#define DEBUG 0
+#endif
+
 
 class Pololu299x : public DCMotor {
  public:
@@ -29,9 +33,11 @@ class Pololu299x : public DCMotor {
   // HIGH: forward drive (OUTA -> OUTB)
   // LOW : backward drive(OUTB -> OUTA)
   void forwardDrive(uint8_t pwm_duty, unsigned int duration) {
-    Serial.println("Driving forward");
-    Serial.print(duration);
-    Serial.println("[ms]");
+    if(DEBUG) {
+      Serial.println("Driving forward");
+      Serial.print(duration);
+      Serial.println("[ms]");
+    }
 
     digitalWrite(pin_dir, HIGH);  // change direction
     PWMdutyChange(pwm_duty);
@@ -41,9 +47,11 @@ class Pololu299x : public DCMotor {
   }
 
   void backwardDrive(uint8_t pwm_duty, unsigned int duration) {
-    Serial.println("Driving backward");
-    Serial.print(duration);
-    Serial.println("[ms]");
+    if(DEBUG) {
+      Serial.println("Driving backward");
+      Serial.print(duration);
+      Serial.println("[ms]");
+    }
 
     digitalWrite(pin_dir, LOW);  // change direction
     PWMdutyChange(pwm_duty);
@@ -53,7 +61,9 @@ class Pololu299x : public DCMotor {
   }
 
   void brakeDrive() {
-    Serial.println("Brake");
+    if(DEBUG) {
+      Serial.println("Brake");
+    }
 
     digitalWrite(pin_pwm, LOW);
   }
