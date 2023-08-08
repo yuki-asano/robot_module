@@ -36,7 +36,7 @@ void loop() {
     } else if (str.toFloat()) {
       Serial.println("update angle");
       motorAngleNew = str.toFloat();
-      enc.updateMotorAngle(motorAngleNew);
+      enc.overwriteMotorAngle(motorAngleNew);
     } else {
       Serial.println("invalid command");
     }
