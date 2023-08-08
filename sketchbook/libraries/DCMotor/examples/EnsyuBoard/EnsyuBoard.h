@@ -10,16 +10,30 @@ class EnsyuBoard : public DCMotor {
  public:
   uint8_t pin_in1;
   uint8_t pin_in2;
+  float currAngle = 0.0;  // [rad]
+  float prevAngle = 0.0;
+  float prevdiffAngle = 0.0;
+  float diffAngle = 0.0;
+  float diffAngle_d = 0.0;
+  float integral = 0.0;
+  float output = 0.0;
+  float targetAngle = 0.0;
+  float dt;
 
- EnsyuBoard(uint8_t _pin_pwm, uint8_t _pin_in1, uint8_t _pin_in2) :
+  const float p_gain = 3.0;
+  const float d_gain = 2.0;
+  const float i_gain = 0.0;
+  const float epsilon = 1.0; // [deg]
+
+ EnsyuBoard(uint8_t _pin_pwm, uint8_t _pin_in1, uint8_t _pin_in2, float controlCycle) :
   DCMotor(_pin_pwm)
   {
     pin_in1 = _pin_in1;
     pin_in2 = _pin_in2;
+    dt = controlCycle;
   }
 
   ~EnsyuBoard() {};
-
 
   void initialize() {
     pinMode(pin_in1, OUTPUT);
@@ -100,6 +114,35 @@ class EnsyuBoard : public DCMotor {
 
     digitalWrite(pin_in1, HIGH);
     digitalWrite(pin_in2, HIGH);
+  }
+
+
+  float positionControl(float tAngle, float cAngle) {
+    targetAngle = tAngle;
+    currAngle = cAngle;
+    diffAngle = targetAngle - currAngle;
+    diffAngle_d = (diffAngle - prevdiffAngle) / dt;
+    // calc integral if motor angle is not reached to the reference
+    if(abs(diffAngle) > epsilon){
+      integral += diffAngle * dt;
+    }
+    //output = p_gain * diffAngle + i_gain * integral + d_gain * diffAngle_d;
+    output = p_gain * diffAngle + i_gain * integral;
+    //output = p_gain * diffAngle;
+
+    if(output>100)
+      output = 100;
+    if(output<-100)
+      output = -100;
+
+    if(abs(diffAngle) < epsilon){
+      output = 0.0;
+    }
+
+    prevdiffAngle = diffAngle;
+    prevAngle = currAngle;
+
+    return output;
   }
 
 };
