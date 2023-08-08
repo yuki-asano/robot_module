@@ -33,11 +33,11 @@ const float gearRatio = 34.0;
 const int encoderCPR = 64;
 
 // sensor data
-unsigned long elapsed_time_enc = 0;
-unsigned long elapsed_time_temp = 0;
-long encCount = 0;
-float motorTemp = 0;
-float motorAngle = 0.0;
+volatile unsigned long elapsed_time_enc = 0;
+volatile unsigned long elapsed_time_temp = 0;
+volatile long encCount = 0;
+volatile float motorTemp = 0;
+volatile float motorAngle = 0.0;
 
 // ros
 ros::NodeHandle nh;
@@ -56,23 +56,36 @@ void timerCount()
   tc2++;
   tc3++;
 
-  // tc1: drive motor
+  // tc1: update temp sensor
   if (tc1 >= 1000) {
     tc1 = 0;
     tc1Flag = true;
   }
-  // tc2: temp sensor
-  if (tc2 >= 500) {
+  // tc2: serial print
+  if (tc2 >= 6000) {
     tc2 = 0;
     tc2Flag = true;
   }
-  // tc3: pubish or print
-  if (tc3 >= 1000) {
-    tc3 = 0;
-    tc3Flag = true;
-  }
+  // // tc3: not used
+  // if (tc3 >= 2000) {
+  //   tc3 = 0;
+  //   tc3Flag = true;
+  // }
 }
 
+void update_temp() {
+  // get temperature
+  elapsed_time_temp = get_elapsed_time();
+  motorTemp = get_temp_TMP03(PIN_TMP);
+}
+
+void update_encoder_and_angle () {
+  // update encoder and get angle
+  elapsed_time_enc = get_elapsed_time();
+  motorAngle = enc.getMotorAngle();
+  encCount = enc.getEncoderCount();
+  msg_angle.data = motorAngle;
+}
 
 void setup() {
   Serial.begin(BAUD);
@@ -91,6 +104,7 @@ void setup() {
 
   // timer setup
   MsTimer2::set(1, timerCount);
+  //MsTimer2::set(5000, drive_motor);  // not work. can't use delay in timer?
   MsTimer2::start();
 
   Serial.println("# time_temp[ms] temp[degC] time_enc[ms] theta[deg]");
@@ -100,40 +114,27 @@ void setup() {
 void loop() {
   startTime = micros();
 
-  // update encoder and get angle
-  elapsed_time_enc = get_elapsed_time();
-  motorAngle = enc.getMotorAngle();
-  encCount = enc.getEncoderCount();
-  msg_angle.data = motorAngle;
+  // drive motor
+  if(motorTemp < 70) {
+    EB.forwardDrive(100, 5000);   // duty: 100, delay 5[s]
+    //EB.forwardDrive(90, 4000);  // duty: 100 -> jerky motion
+    //EB.forwardDrive(77, 2000);  // arg: (duty, delay). duty 30%.
+    delay(300);  // over 300ms is necessary for stable drive switch when delay is 5000
+
+    EB.backwardDrive(100, 5000);
+    //EB.backwardDrive(90, 4000);
+    //EB.backwardDrive(77, 2000);
+    delay(300);  // over 300ms is necessary for stable drive switch when delay is 5000
+  } else {
+    Serial.println("motorTemp is high");
+  }
 
   // task
   if(tc1Flag) {
-    // drive motor
-    if(motorTemp < 70) {
-      EB.forwardDrive(77, 2000);  // arg: (pwm, delay). PWM 30%.
-      delay(300);
-      EB.backwardDrive(77, 2000);
-      delay(300);
-    } else {
-      Serial.println("motorTemp is high");
-    }
-
+    update_temp();  // temp value is wrong when this is in timer directry
     tc1Flag = false;
   }
   if(tc2Flag) {
-    // get temperature
-    elapsed_time_temp = get_elapsed_time();
-    motorTemp = get_temp_TMP03(PIN_TMP);
-    msg_temp.data = motorTemp;
-
-    tc2Flag = false;
-  }
-  if(tc3Flag) {
-    // publish
-    pub_angle.publish(&msg_angle);  // angle is not trusted value
-    pub_temp.publish(&msg_temp);
-    nh.spinOnce();  // period between cycles is neccesary for rosserial communication
-
     // serial print
     Serial.print(elapsed_time_temp, 6);
     Serial.print(" ");
@@ -149,8 +150,16 @@ void loop() {
     Serial.print(cycleTime, 6);
     Serial.println(")");
 
-    tc3Flag = false;
+    tc2Flag = false;
   }
+  // if(tc3Flag) {
+  //   tc3Flag = false;
+  // }
+
+  // publish
+  msg_temp.data = motorTemp;
+  pub_temp.publish(&msg_temp);
+  nh.spinOnce();  // period between cycles is neccesary for rosserial communication
 
   endTime = micros();
   cycleTime = endTime - startTime;
